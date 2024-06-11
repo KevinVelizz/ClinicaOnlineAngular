@@ -1,0 +1,125 @@
+<div class="container">
+    <label class="relative inline-flex items-center cursor-pointer mt-10">
+        <input class="sr-only peer" value="" type="checkbox" (change)="onToggle($event)">
+        <div
+            class="peer ring-2 ring-gray-900 bg-gradient-to-b from-cyan-600 to-cyan-600 rounded-full outline-none duration-300 after:duration-500 w-20 h-8 shadow-inner peer-checked:bg-gradient-to-r peer-checked:from-emerald-500 peer-checked:to-emerald-900 shadow-gray-900 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-900 after:content-[''] after:rounded-full after:absolute after:outline-none after:h-12 after:w-12 after:bg-gray-50 after:-top-2 after:left-10 after:flex after:justify-center after:items-center after:border-4 after:border-gray-900 peer-checked:after:translate-x-[-14px] peer-checked:after:left-0">
+        </div>
+        <span class="card-side"></span>
+    </label>
+
+    <form class="form mt-3 flex-row" [formGroup]="form">
+        <div class="img-logo"></div>
+       
+       
+        <div class="title text-center uppercase">¡Bienvenido!<br><span class="lowercase">Seleccione cual desea registrar</span></div>
+        <div class="contenedor-botones-registrar">
+            <button class="button-confirm" (click)="registrarPaciente=true">Registrar paciente →</button>
+            <button class="button-confirm" (click)="registrarEspecialista=true">Registrar especialista →</button>
+        </div>
+
+        @if(registrarPaciente)
+        {
+            <h4 class="text-center text-2xl font-bold">Paciente</h4>
+            <div class="contenedor-inputs">
+                <!-- Nombre -->
+                <div>
+                    <input class="input text-gl" name="nombre" placeholder="nombre" type="text" formControlName="nombre">
+                    @if(form.get('nombre')?.touched && form.get('nombre')?.invalid)
+                    {
+                    <div class="text-red-700">
+                        El nombre es requerido.
+                    </div>
+                    }
+                </div>
+    
+    
+                <!-- apellido -->
+                <div>
+                    <input class="input text-gl" name="apellido" placeholder="apellido" type="text"
+                        formControlName="apellido">
+                    @if(form.get('apellido')?.touched && form.get('apellido')?.invalid)
+                    {
+                    <div class="text-red-700">
+                        El apellido es requerido.
+                    </div>
+                    }
+                </div>
+    
+    
+                <!-- edad -->
+                <div>
+                    <input class="input text-gl" name="edad" placeholder="edad" type="number" formControlName="edad">
+                    @if(form.get('edad')?.touched && form.get('edad')?.invalid)
+                    {
+                    <div class="text-red-700">
+                        La edad es requerida.
+                    </div>
+                    }
+                </div>
+    
+                <!-- dni -->
+                <div>
+                    <input class="input text-gl" name="dni" placeholder="dni" type="number" formControlName="dni">
+                    @if(form.get('dni')?.touched && form.get('dni')?.invalid)
+                    {
+                    <div class="text-red-700">
+                        El DNI es requerido.
+                    </div>
+                    }
+                </div>
+    
+                <!-- obra social -->
+                <div>
+                    <input class="input text-gl" name="obraSocial" placeholder="obra social" type="text"
+                        formControlName="obraSocial">
+                    @if(form.get('obraSocial')?.touched && form.get('obraSocial')?.invalid)
+                    {
+                    <div class="text-red-700">
+                        La obra social es requerida.
+                    </div>
+                    }
+                </div>
+    
+    
+                <!-- correo -->
+                <div>
+                    <input class="input text-gl" name="email" placeholder="correo" type="email" formControlName="correo">
+                    @if(form.get('correo')?.touched && form.get('correo')?.invalid)
+                    {
+                    <div class="text-red-700">
+                        @if(form.get('correo')?.errors?.['required'])
+                        {
+                        <div>
+                            El correo electrónico es requerido.
+                        </div>
+                        }
+                        @if(form.get('email').errors.email)
+                        {
+                        <div>
+                            El correo electrónico es invalido.
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+    
+                <!-- contraseña -->
+                <div>
+                    <input class="input text-gl" name="password" placeholder="contraseña" type="password"
+                        formControlName="password">
+                    @if(form.get('password')?.touched && form.get('password')?.invalid)
+                    {
+                    <div class="text-red-700">
+                        La contraseña es requerida.
+                    </div>
+                    }
+                </div>
+            </div>
+        }
+        <button class="button-confirm" (click)="singUp()">Iniciar Sesión →</button>
+    </form>
+</div>
+<footer class="flex-1 text-center">
+    <p class="uppercase text-lg font-bold bg-cyan-600 py-4">&copy; 2024 Clínica Online. Todos los derechos reservados.
+    </p>
+</footer>
