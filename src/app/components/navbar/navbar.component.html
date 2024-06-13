@@ -1,1 +1,42 @@
-<p>navbar works!</p>
+<header class="header bg-cyan-600">
+  <nav class="flex gap-2 px-8 py-8">
+    <button routerLink="/register"
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
+      <span>
+        REGISTER
+      </span>
+    </button>
+    @if(logueado){
+    <button routerLink="home" class="ui-btn">
+      <span>
+        HOME
+      </span>
+    </button>
+    }@else if(!logueado){
+    <button routerLink="/login"
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
+      <span>
+        LOGIN
+      </span>
+    </button>
+
+    <button routerLink="/bienvenida"
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce">
+      <span>
+        BIENVENIDA
+      </span>
+    </button>
+    }
+  </nav>
+  @if(logueado)
+  {
+  <div class="salir">
+    <h2 class="usuario">{{correo}}</h2>
+    <button (click)="LogOut()" class="ui-btn">
+      <span>
+        LOGOUT
+      </span>
+    </button>
+  </div>
+  }
+</header>

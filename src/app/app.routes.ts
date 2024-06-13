@@ -24,8 +24,22 @@ export const routes: Routes = [
     },
 
     {
+        path: "bienvenida", loadComponent: () =>
+            import('../app/components/bienvenida/bienvenida.component').then(
+                (m) => m.BienvenidaComponent
+            ),
+    },
+
+    {
+        path: "usuarios", loadComponent: () =>
+            import('../app/components/seccion-usuarios/seccion-usuarios.component').then(
+                (m) => m.SeccionUsuariosComponent
+            ),
+    },
+
+    {
         path: '',
-        redirectTo: 'splash',
+        redirectTo: 'bievenida',
         pathMatch: 'full',
     },
 ];

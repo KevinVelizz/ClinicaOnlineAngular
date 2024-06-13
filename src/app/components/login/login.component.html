@@ -5,28 +5,24 @@
     </div>
     <span class="card-side"></span>
     </label>
-    <form class="form mt-3" [formGroup]="form">
+    <form class="form mt-3 mb-5 flex-row" [formGroup]="form">
         <div class="img-logo"></div>
-        <div class="title text-center uppercase">¡Bienvenido!<br><span class="lowercase">inicia Sesión a continuación</span></div>
-        <input class="input text-xl" name="email" placeholder="correo" type="email" formControlName="email">
+        <div class="title text-center">¡BIENVENIDO!<br><span>Inicia sesión a continuación</span></div>
+        <input class="input text-xl" name="email" placeholder="Correo" type="email" formControlName="email">
         @if(form.get('email')?.touched && form.get('email')?.invalid)
         {
             <div class="text-red-700">
                 @if(form.get('email')?.errors?.['required'])
                 {
-                    <div>
-                        El correo electrónico es requerido.
-                    </div>
+                    <p>El correo electrónico es requerido.</p>
                 }
                 @if(form.get('email').errors.email)
                 {
-                    <div>
-                        El correo electrónico es invalido.
-                    </div>
+                    <p>El correo electrónico es invalido.</p>
                 }
             </div>
         }
-        <input class="input text-xl" name="password" placeholder="contraseña" type="password" formControlName="password">
+        <input class="input text-xl" name="password" placeholder="Contraseña" type="password" formControlName="password">
         @if(form.get('password')?.touched && form.get('password')?.invalid)
         {
             <div class="text-red-700">
@@ -57,9 +53,7 @@
                 </svg>
             </div> -->
         </div>
-        <button class="button-confirm">Iniciar Sesión →</button>
+        <button class="button-confirm" (click)="singUp()">Iniciar Sesión →</button>
     </form>
 </div>
-<footer class="flex-1 text-center">
-    <p class="uppercase text-lg font-bold bg-cyan-600 py-4">&copy; 2024 Clínica Online. Todos los derechos reservados.</p>
-</footer>
+<app-footer></app-footer>

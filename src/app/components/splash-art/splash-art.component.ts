@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
   templateUrl: './splash-art.component.html',
   styleUrl: './splash-art.component.css'
 })
+
 export class SplashArtComponent {
   router_service = inject(Router);
 

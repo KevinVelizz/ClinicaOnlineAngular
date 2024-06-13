@@ -3,15 +3,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 93vh;
+    min-height: 100%;
     max-width: 100%;
-    background-color: rgba(255, 255, 255, 0.5);
+    margin-top: 20px;
 }
 
 .container::before {
     content: "";
-    position: absolute;
+    position:fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -19,7 +18,7 @@
     background-image: url(../../../assets/resources/img/fondo-tp.jpg);
     background-position: center center;
     background-size: contain;
-    opacity: 0.5;
+    opacity: 0.4;
     z-index: -1; 
 }
 
@@ -41,13 +40,12 @@
     border-radius: 5px;
     border: 2px solid var(--main-color);
     box-shadow: 4px 4px var(--main-color);
-    margin-bottom: 40px;
     max-width: 500px;
+    max-height: 100%;
 }
 
 /* TITULO FORMULARIO */
 .title {
-    color: var(--font-color);
     font-weight: 900;
     font-size: 20px;
     margin-bottom: 25px;
@@ -63,6 +61,16 @@
     font-size: 25px;
 }
 
+.select-especialidad
+{
+    width: 100%;
+    height: 30px;
+    border: 2px solid var(--main-color);
+    background-color: var(--bg-color);
+    box-shadow: 4px 4px var(--main-color);
+    border-radius: 5px;
+}
+
 .input {
     width: 230px;
     height: 45px;
@@ -71,7 +79,6 @@
     background-color: var(--bg-color);
     box-shadow: 4px 4px var(--main-color);
     font-weight: 600;
-    color: var(--font-color);
     padding: 5px 10px;
     outline: none;
 }
@@ -112,6 +119,7 @@
 }
 
 .button-log:active,
+.button-seleccionar:active,
 .button-confirm:active {
     box-shadow: 0px 0px var(--main-color);
     transform: translate(3px, 3px);
@@ -123,8 +131,22 @@
     column-gap: 20px;
 }
 
-.button-confirm {
+.button-seleccionar
+{
     margin: 50px 0 0 auto;
+    width: 150px;
+    height: 50px; 
+    border-radius: 5px;
+    background-color: beige;
+    border: 2px solid black;
+    box-shadow: 4px 4px black;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.button-confirm {
+    margin: 0 0 0 auto;
     width: 150px;
     height: 50px;
     border-radius: 5px;
@@ -133,7 +155,6 @@
     box-shadow: 4px 4px var(--main-color);
     font-size: 17px;
     font-weight: 600;
-    color: var(--font-color);
     cursor: pointer;
 }
 
@@ -192,3 +213,14 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 }
+
+/* FOOTER */
+
+/* .footer-pag
+{
+    flex-wrap: wrap-reverse;
+    position: absolute;
+    width: 100%;
+}
+ */
+
