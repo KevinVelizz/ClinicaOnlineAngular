@@ -1,0 +1,30 @@
+<table class="repartidores-table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>DNI</th>
+      <th>Correo</th>
+      <th>Especialidad</th>
+      <th>Verificado</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for(especialista of especialistas; track $index;)
+    {
+    @if(!especialista.verificado)
+    {
+    <tr (click)="especialistaSelect($event)">
+      <td>{{ especialista.nombre }}</td>
+      <td>{{ especialista.apellido }}</td>
+      <td>{{ especialista.dni }}</td>
+      <td>{{ especialista.correo }}</td>
+      <td>{{ especialista.especialidad }}</td>
+      <td>{{ especialista.verificado ? 'Sí' : 'No' }}</td>
+    </tr>
+    }
+    }
+  </tbody>
+</table>
+
+<app-loader [isLoading]="isLoading"></app-loader>

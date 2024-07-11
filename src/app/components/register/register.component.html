@@ -1,4 +1,5 @@
 <div class="container">
+    <app-loader [isLoading]="isLoading"></app-loader>
     <label class="relative inline-flex items-center cursor-pointer">
         <input class="sr-only peer" value="" type="checkbox" (change)="onToggle($event)">
         <div
@@ -7,8 +8,10 @@
         <span class="card-side"></span>
     </label>
     <div class="contenedor-botones-registrar">
-        <button class="button-seleccionar cursor-pointer animate-bounce hover:animate-none" (click)="elegirRegistrar(false)">Registrar paciente →</button>
-        <button class="button-seleccionar animate-bounce hover:animate-none" (click)="elegirRegistrar(true)">Registrar especialista →</button>
+        <button class="button-seleccionar img-paciente cursor-pointer motion-safe:animate-bounce"
+            (click)="elegirRegistrar(false)"></button>
+        <button class="button-seleccionar img-especialista motion-safe:animate-bounce"
+            (click)="elegirRegistrar(true)"></button>
     </div>
     @if(registrarPaciente)
     {
@@ -95,8 +98,6 @@
                 }
             </div>
 
-
-
             <!-- foto -->
             <div>
                 <input class="input text-gl" type="file" formControlName="imagenPerfilUno" name="imagenPerfil"
@@ -131,7 +132,6 @@
                 }
             </div>
 
-
             <!-- apellido -->
             <div>
                 <input class="input text-gl" name="apellido" placeholder="Apellido" type="text"
@@ -141,7 +141,6 @@
                 <p>El apellido es requerido.</p>
                 }
             </div>
-
 
             <!-- edad -->
             <div>
@@ -157,32 +156,19 @@
                 <input class="input text-gl" name="dni" placeholder="DNI" type="number" formControlName="dni">
                 @if(formEspecialista.get('dni')?.touched && formEspecialista.get('dni')?.invalid)
                 {
-                <p>El DNI es requerido.</p>
-                }
-            </div>
-
-            <!-- especialidad -->
-            <!-- <div>
-                    <input class="input text-gl" name="especialidad" placeholder="Especialidad" type="text"
-                        formControlName="especialidad">
-                    @if(formEspecialista.get('especialidad')?.touched && formEspecialista.get('especialidad')?.invalid)
+                <div>
+                    @if(formEspecialista.get('dni')?.errors?.['required'])
                     {
-                        <p>La especialidad es requerida.</p>
+                    <p>El DNI es requerido.</p>
                     }
-                </div> -->
-
-            <div>
-                <label class="input text-gl ">Especialidad:</label>
-                <select class="select-especialidad mt-3" formControlName="especialidad">
-                    <option value="" disabled selected>--Seleccione--</option>
-                    <option *ngFor="let especialidad of especialidades" [value]="especialidad">{{ especialidad }}
-                    </option>
-                    <option value="otra">Otra</option>
-                </select>
-                <div class="my-2" *ngIf="formEspecialista.get('especialidad')?.value === 'otra'">
-                    <label>Agregar Especialidad:</label>
-                    <input class="input text-gl" formControlName="nuevaEspecialidad"/>
+                    <div>
+                        @if(formEspecialista.get('dni').errors?.['dniValidar'])
+                        {
+                        <p>El DNI tiene que tener 8 carácteres.</p>
+                        }
+                    </div>
                 </div>
+                }
             </div>
 
             <!-- correo -->
@@ -219,10 +205,22 @@
                 <input class="input text-gl" type="file" formControlName="imagenPerfil" name="imagenPerfil"
                     accept="image/png, image/jpeg" (change)="seleccionarFotoPerfilUno($event)">
             </div>
+
+            <mat-chip-grid #chipGrid aria-label="Enter fruits">
+                @for (especialidad of especialidadesMostrar; track especialidad) {
+                <mat-chip-row (removed)="remove(especialidad)" [editable]="true"
+                    [aria-description]="'press enter to edit ' + especialidad.nombre">
+                    {{especialidad.nombre}}
+                    <button matChipRemove [attr.aria-label]="'remove ' + especialidad.nombre">
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip-row>
+                }
+                <input placeholder="Nueva Especialidad..." [matChipInputFor]="chipGrid"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                    (matChipInputTokenEnd)="add($event)" />
+            </mat-chip-grid>
         </div>
-
-       
-
         <button class="button-confirm" (click)="register()">Registrarse →</button>
     </form>
     }

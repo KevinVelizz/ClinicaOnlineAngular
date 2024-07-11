@@ -1,0 +1,44 @@
+/* CONTENEDOR */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px auto;
+    padding: 10px 0;
+    min-height: 100%;
+    max-width: 60%;
+    margin-top: 20px;
+    background-color: white;
+}
+
+.container::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../../../assets/resources/img/fondo-tp.jpg);
+    background-position: center center;
+    background-size: contain;
+    opacity: 0.4;
+    z-index: -1;
+
+}
+
+.filters {
+    margin-bottom: 20px;
+}
+
+.filters input {
+    margin-right: 10px;
+    padding: 8px;
+}
+
+.turno-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: beige;
+    width: 500px;
+}

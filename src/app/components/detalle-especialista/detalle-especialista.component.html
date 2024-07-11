@@ -1,0 +1,13 @@
+<div *ngIf="especialista" style="margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+  <app-loader [isLoading]="isLoading"></app-loader>
+  @if(!especialista.verificado)
+  {
+    <h4 class="producto-titulo">Información especialista</h4>
+    <img style="width: 200px; height: 200px;" [src]="especialista.imagen" alt="Bandera del país">
+    <h5>nombre: {{especialista.nombre}}</h5>
+    <h5>apellido: {{especialista.apellido}}</h5>
+    <button class="button-confirm bg-green-600" (click)="actualizarEspecialista()">Confirmar</button>
+  }
+
+</div>
+  

@@ -1,43 +1,52 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, DocumentReference } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Especialista } from '../interfaces/especialista';
 import { Paciente } from '../interfaces/paciente';
+import { Administrador } from '../interfaces/administrador';
+import { Turno } from '../interfaces/turno';
+import { Usuario } from '../interfaces/usuario';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirestoreService {
   
-  private especialistasCollection: AngularFirestoreCollection<Especialista>;
-  especialistas: Observable<Especialista[]>;
-
-  private pacientesCollection: AngularFirestoreCollection<Paciente>;
-  pacientes: Observable<Paciente[]>;
-
-  // private administradoresCollection: AngularFirestoreCollection<Administrador>;
-  // administradores: Observable<Administrador[]>;
+  private usuariosCollection: AngularFirestoreCollection<Especialista | Paciente | Administrador | any>;
+  usuarios: Observable<(Usuario)[]>;
   
   constructor(private angularFirestore: AngularFirestore)
   {
-    this.especialistasCollection = this.angularFirestore.collection<Especialista>('especialistas');
-    this.especialistas = this.especialistasCollection.valueChanges({ idField: 'id' });
-
-    this.pacientesCollection = this.angularFirestore.collection<Paciente>('pacientes');
-    this.pacientes = this.pacientesCollection.valueChanges({ idField: 'id' });
+    this.usuariosCollection = this.angularFirestore.collection<Usuario>('usuarios');
+    this.usuarios = this.usuariosCollection.valueChanges({ idField: 'id' });
+  }
   
-    // this.administradoresCollection = this.angularFirestore.collection<Administrador>('administradores');
-    // this.administradores = this.administradoresCollection.valueChanges({ idField: 'id' });
-
+  getTurnosByPaciente(pacienteId: string): Observable<any[]> {
+    return this.angularFirestore.collection('turnos', ref => ref.where('paciente', '==', pacienteId)).valueChanges({ idField: 'id' });
   }
 
-  async agregarEntidad(tipo: Paciente | Especialista, collection:string) : Promise<DocumentReference<Paciente | Especialista>>
+  getCollection(col:string): Observable<any[]>
   {
-    return this.angularFirestore.collection<Paciente | Especialista>(collection).add(tipo);
+    return this.angularFirestore.collection(col).valueChanges({idField:'id'});
   }
 
-  async actualizarEntidad(tipo: Paciente | Especialista, id: any, collection: string): Promise<void>
+
+  async agregarEntidad(tipo:Usuario, collection:string) : Promise<DocumentReference<Usuario>>
   {
-    return this.angularFirestore.collection<Especialista | Paciente>(collection).doc(id).update(tipo);
+    return this.angularFirestore.collection<Usuario>(collection).add(tipo);
+  }
+
+  agregar(entidad: any, coleccion:any): Promise<DocumentReference<any>> {
+    return this.angularFirestore.collection<Turno>(coleccion).add(entidad);
+  }
+
+  async actualizarEntidad(entidad:Usuario, id: any, collection: string): Promise<void>
+  {
+    return this.angularFirestore.collection<Usuario>(collection).doc(id).update(entidad);
+  } 
+
+  async actualizarTurno(entidad: Turno, id: any): Promise<void>
+  {
+    return this.angularFirestore.collection<Usuario>('turnos').doc(id).update(entidad);
   } 
 }

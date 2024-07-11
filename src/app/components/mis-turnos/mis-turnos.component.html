@@ -1,0 +1,33 @@
+<div class="container">
+    <h2>Mis Turnos</h2>
+    
+    <input type="text" placeholder="Buscar por Especialidad - Especialista" [(ngModel)]="filtro" (input)="filtrarTurnos()">
+    
+    <div *ngIf="turnosFiltrados.length === 0">No se encontraron turnos.</div>
+    
+    <div *ngFor="let turno of turnosFiltrados" class="turno-card">
+        <p><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
+        <p><strong>Especialista:</strong> {{ turno.especialista }}</p>
+        <p><strong>Fecha:</strong> {{ turno.fechaTurno| date: 'short' }}</p>
+
+        <div *ngIf="mostrarComentario && (turno.resenia)">
+            <p><strong>Comentario:</strong> {{ turno.resenia }}</p>
+        </div>
+
+        <div *ngIf="turno.estado === 'pendiente'">
+            <button class="bg-red-600 mr-5 py-2 px-3 uppercase" (click)="cancelar(turno)">Cancelar Turno</button>
+        </div>
+
+        <div *ngIf="turno.resenia">
+            <button (click)="mostrarComentario = true" class="bg-yellow-600 mr-5 py-2 px-3 uppercase">Ver reseña</button>
+        </div>
+
+        <div *ngIf="turno.estado === 'realizado' || turno.resenia">
+            <button (click)="mostrarComentario = true" class="bg-green-600 py-2 px-3 uppercase">Realizar encuesta</button>
+        </div>
+
+        <div *ngIf="turno.estado === 'realizado'">
+            <button (click)="mostrarComentario = true" class="bg-blue-600 mt-3 py-2 px-3 uppercase">Calificar Atención</button>
+        </div>
+    </div>
+</div>

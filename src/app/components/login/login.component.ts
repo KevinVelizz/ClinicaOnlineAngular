@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { FooterComponent } from '../footer/footer.component';
@@ -7,44 +7,59 @@ import { AuthService } from '../../services/auth.service';
 import { FirestoreService } from '../../services/firestore.service';
 import { Paciente } from '../../interfaces/paciente';
 import { Especialista } from '../../interfaces/especialista';
+import { Administrador } from '../../interfaces/administrador';
+import { LoaderComponent } from '../loader/loader.component';
+import { Usuario } from '../../interfaces/usuario';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterLink, FormsModule, ReactiveFormsModule, FooterComponent, NavbarComponent],
+  imports: [RouterLink, FormsModule, ReactiveFormsModule, FooterComponent, NavbarComponent, LoaderComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
   form!: any | FormGroup;
   routerLogin = inject(Router);
-  pacientes!: Paciente[];
-  especialistas!: Especialista[];
-  usuario!: Paciente | Especialista ;
+  contador: number = 0;
+  pacientes: Paciente[] = [];
+  especialistas: Especialista[] = [];
+  admin!: Administrador;
+  usuarios!: any[];
+  usuario!: any;
+  usuarioSeleccionado!: Usuario | undefined;
+  isLoading: boolean = false;
 
-  constructor(private router: Router, private fb: FormBuilder, private AuthService: AuthService, private firestore: FirestoreService) {
+  constructor(private router: Router, private fb: FormBuilder, private AuthService: AuthService, private firestore: FirestoreService, private snackBar: MatSnackBar) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
 
-    this.firestore.pacientes.subscribe(pacientes => {
-      if (pacientes) {
-        this.pacientes = pacientes;
+    this.especialistas = [];
+    this.pacientes = [];
+    this.usuarios = [];
+
+    this.firestore.usuarios.subscribe(usuarios => {
+      if (usuarios) {
+        this.usuarios = usuarios;
+        for (let index = 0; index < this.usuarios.length; index++) {
+          const element = usuarios[index];
+          if (element.tipo === "Paciente" && this.pacientes.length < 2 && !this.pacientes.includes(element as Paciente)) {
+            this.pacientes.push(element as Paciente);
+          }
+          else if (element.tipo === "Especialista" && this.especialistas.length <= 2 && !this.especialistas.includes(element as Especialista)) {
+            this.especialistas.push(element as Especialista);
+          }
+          else {
+            if (this.admin == null) {
+              this.admin = element as Administrador;
+            }
+          }
+        }
       }
     });
-
-    this.firestore.especialistas.subscribe(especialistas => {
-      if (especialistas) {
-        this.especialistas = especialistas;
-      }
-    });
-
-    // this.firestore.administradores.subscribe(administradores => {
-    //   if (administradores) {
-    //     this.administradores = administradores;
-    //   }
-    // });
   }
 
   onToggle(event: any) {
@@ -53,47 +68,41 @@ export class LoginComponent {
     }
   }
 
-  async singUp() {
+  async signUp() {
     try {
+      this.isLoading = true;
       const { email, password } = this.form.value;
-      const user = await this.AuthService.loginUserFireBase(email, password);
-      if (user) {
-          
-        if (!user.user?.emailVerified) {
-          console.log('verifica tu correo electronico');
-          return;
+
+      if (this.usuarioSeleccionado) {
+        if (this.usuarioSeleccionado.tipo === "Especialista") {
+
+          if (!(this.usuarioSeleccionado as Especialista).verificado) {
+
+            this.snackBar.open(`Tu cuenta no ha sido verificada por el administrador.`, 'Close', {
+              duration: 2000
+            });
+            console.log('Tu cuenta no ha sido verificada por el admin.');
+            return;
+          }
         }
-
-        this.pacientes.forEach(paciente=>{
-          if(paciente.uid == user.user?.uid)
-          {
-            this.usuario = paciente;
-            this.routerLogin.navigate(['/bienvenida']);
-          }
-        });
-          
-        this.especialistas.forEach(especialista=>{
-          if(especialista.uid == user.user?.uid)
-          {
-            this.usuario = especialista;
-
-            if(!this.usuario.verificado) {
-              console.log('Tu cuenta no ha sido verificada por el admin.');
-              return;
-            }
-            this.routerLogin.navigate(['/bienvenida']);
-          }
-        });
-
-        // this.administradores.forEach(administrador=>{
-        //   if(administrador.uid == user.user?.uid)
-        //   {
-        //     this.usuario = administrador;
-        //   }
-        // });
       }
+      await this.AuthService.loginUserFireBase(email, password);
     } catch (error) {
       console.log(error);
+    }finally
+    {
+      this.isLoading = false;
     }
+  }
+
+  llenarCampos(index: string) {
+    this.usuarios.forEach(usuario => {
+      if (usuario.uid == index) {
+        this.form.get('email')?.setValue(usuario.correo);
+        this.form.get('password')?.setValue(usuario.clave);
+        this.usuarioSeleccionado = usuario;
+        return;
+      }
+    });
   }
 }

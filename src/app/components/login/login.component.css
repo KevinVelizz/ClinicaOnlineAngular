@@ -107,7 +107,8 @@
 }
 
 .button-log:active,
-.button-confirm:active {
+.button-confirm:active,
+.button-confirm-users:active {
     box-shadow: 0px 0px var(--main-color);
     transform: translate(3px, 3px);
 }
@@ -124,6 +125,34 @@
     font-weight: 600;
     cursor: pointer;
 }
+
+.button-confirm-users
+{
+    margin: 20px 0 0 auto;
+    width: 120px;
+    height: 45px;
+    border-radius: 5px;
+    border: 2px solid var(--main-color);
+    background-color: var(--bg-color);
+    box-shadow: 4px 4px var(--main-color);
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+
+.contenedor-botones
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.contenedor-botones button
+{
+    margin-top: 10px;
+}
+
 
 /* CAMBIAR REGISTER */
 .wrapper {

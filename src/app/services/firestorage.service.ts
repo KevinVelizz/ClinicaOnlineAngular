@@ -4,6 +4,7 @@ import { Paciente } from '../interfaces/paciente';
 import { Especialista } from '../interfaces/especialista';
 import { FirebaseStorage, getDownloadURL, getStorage, ref, uploadBytes } from '@angular/fire/storage';
 import { FirestoreService } from './firestore.service';
+import { Administrador } from '../interfaces/administrador';
 @Injectable({
   providedIn: 'root'
 })
@@ -11,7 +12,7 @@ export class FirestorageService {
 
   constructor(private firestore: FirestoreService, private fireStorage: AngularFireStorage) { }
 
-  async agregarEntidadConFoto(file: string, imagenes: any, entidad: Paciente | Especialista) {
+  async agregarEntidadConFoto(file: string, imagenes: any, entidad: Paciente | Especialista | Administrador | any) {
 
     if (imagenes) {
       console.log(Object.keys(imagenes).length);
@@ -31,14 +32,15 @@ export class FirestorageService {
       }
       else
       {
-        const type = imagenes.type.split('/')[1];
+        const type = imagenes.fotoUno.type.split('/')[1];
         const path = file + '/' + entidad.nombre + Date.now() + '.' + type;
         const storageRef: any = ref(this.fireStorage.storage, path);
-        await uploadBytes(storageRef, imagenes);
+        await uploadBytes(storageRef, imagenes.foto1);
         const url = await getDownloadURL(storageRef);
         entidad.imagen = url;
       }
-      this.firestore.agregarEntidad(entidad, file);
+      this.firestore.agregarEntidad(entidad, 'usuarios');
+      return entidad;
     }
   }
 }

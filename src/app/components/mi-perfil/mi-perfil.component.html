@@ -1,0 +1,70 @@
+<div class="container">
+    <div class="flex justify-center">
+        <div class="mb-8">
+            <div class="bg-white shadow rounded-lg">
+                <div class="p-8 lg:p-12">
+                    <div class="flex flex-col lg:flex-row items-center ">
+                        <div class="lg:w-1/3 text-center mb-6 lg:mb-0">
+                            <img [src]="imagenes[0]['foto1']" class="w-40 h-40 rounded-full mx-auto"
+                                alt="Imagen de Perfil">
+                        </div>
+                        <div class="lg:w-2/3 lg:px-12">
+                            <div class=" rounded-lg py-4 px-6 mb-6">
+                                <h3 class="text-2xl">{{ user?.nombre }} {{ user?.apellido }}</h3>
+                                <span class="text-primary">{{ user?.tipo }}</span>
+                            </div>
+                            <ul class="list-none mb-6">
+                                <li class="mb-4">
+                                    <span class="font-semibold">Edad:</span> {{ user?.edad }}
+                                </li>
+                                <li class="mb-4">
+                                    <span class="font-semibold">DNI:</span> {{ user?.dni }}
+                                </li>
+                                <li class="mb-4">
+                                    <span class="font-semibold">Email:</span> {{ user?.correo }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr class="my-6">
+                    <div *ngIf="user?.tipo === 'Especialista'">
+                        <h4 class="text-lg font-semibold mb-4">Disponibilidad:</h4>
+                        <div class="">
+                            <div *ngFor="let dia of ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']">
+                                <button
+                                    class="bg-teal-500 text-white mt-2 py-2 px-4 rounded hover:bg-teal-700 transition duration-300 w-full"
+                                    (click)="agregarHorario(dia)">
+                                    {{ dia }}
+                                </button>
+                                <div *ngIf="horarios[dia]" class="mt-2 space-y-2">
+                                    <div *ngFor="let horario of horarios[dia]; let i = index"
+                                        class="flex items-center justify-between space-x-2">
+                                        <label class="flex-1">
+                                            <span class="text-sm text-gray-600">Desde:</span>
+                                            <select [(ngModel)]="horario.desde" class="w-30 mt-1 p-2 border rounded">
+                                                <option *ngFor="let hora of getHorasInicioDisponibles(dia, i)"
+                                                    [value]="hora">{{ hora }}</option>
+                                            </select>
+                                        </label>
+                                        <label class="flex-1">
+                                            <span class="text-sm text-gray-600">Hasta:</span>
+                                            <select [(ngModel)]="horario.hasta" class="w-30 mt-1 p-2 border rounded">
+                                                <option *ngFor="let hora of getHorasFinDisponibles(dia, i)"
+                                                    [value]="hora">{{ hora }}</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button (click)="guardarDisponibilidad()"
+                            class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-300 mt-6">
+                            Guardar Disponibilidad
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

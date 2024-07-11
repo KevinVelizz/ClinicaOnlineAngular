@@ -1,10 +1,5 @@
-export interface Administrador {
-    uid?: string;
-    nombre: string;
-    apellido: string;
-    edad: number;
-    dni: number;
-    correo: string;
-    clave: string;
-    imagen: string;
+import { Usuario } from "./usuario";
+
+export interface Administrador extends Usuario{
+    imagen:{foto1:string}
 }

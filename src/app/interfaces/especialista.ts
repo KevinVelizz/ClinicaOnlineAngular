@@ -1,12 +1,10 @@
-export interface Especialista {
-    uid?: string;
-    nombre: string;
-    apellido: string;
-    edad: number;
-    dni: number;
-    especialidad: string;
-    correo: string;
-    clave: string;
+import { Usuario } from "./usuario";
+
+
+
+export interface Especialista extends Usuario {
+    especialidad:any[];
     verificado: boolean;
-    imagen: string;
+    imagen: {foto1:string};
+    disponibilidad: { [dia: string]: { desde: string, hasta: string }[] };
 }

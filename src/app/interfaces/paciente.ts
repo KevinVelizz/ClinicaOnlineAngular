@@ -1,11 +1,6 @@
-export interface Paciente {
-    uid?: string;
-    nombre: string;
-    apellido: string;
-    edad: number;
-    dni: number;
+import { Usuario } from "./usuario";
+
+export interface Paciente extends Usuario {
     obraSocial: string;
-    correo: string;
-    clave: string;
-    imagen: {};
+    imagen: {foto1:string, foto2:string};
 }

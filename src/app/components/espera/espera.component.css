@@ -1,0 +1,41 @@
+/* CONTENEDOR */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100%;
+    max-width: 100%;
+    margin-top: 20px;
+}
+
+.container::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../../../assets/resources/img/fondo-tp.jpg);
+    background-position: center center;
+    background-size: contain;
+    opacity: 0.4;
+    z-index: -1; 
+
+}
+
+/* TITULO FORMULARIO */
+.title {
+    font-weight: 900;
+    font-size: 20px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.title span {
+    color: var(--font-color-sub);
+    font-weight: 600;
+    font-size: 25px;
+}

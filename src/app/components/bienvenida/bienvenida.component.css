@@ -54,6 +54,14 @@
     cursor: pointer;
 }
 
+.button-log:active,
+.button:active,
+.button-users:active {
+    box-shadow: 0px 0px var(--main-color);
+    transform: translate(3px, 3px);
+}
+
+
 .title {
     font-weight: 900;
     font-size: 20px;

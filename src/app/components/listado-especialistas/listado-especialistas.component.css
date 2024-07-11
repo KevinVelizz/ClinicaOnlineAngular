@@ -1,0 +1,18 @@
+.repartidores-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.repartidores-table th,
+.repartidores-table td {
+    border: 1px solid #dddddd;
+    padding: 8px;
+    text-align: left;
+    background-color: #f2f2f2;
+}
+
+
+.repartidores-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+

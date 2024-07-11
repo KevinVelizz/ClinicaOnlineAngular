@@ -1,0 +1,11 @@
+.button-confirm {
+    margin: 0 auto;
+    width: 150px;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid black;
+    box-shadow: 4px 4px black;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+}

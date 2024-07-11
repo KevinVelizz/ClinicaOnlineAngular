@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SplashArtComponent } from './splash-art.component';
+import { EsperaComponent } from './espera.component';
 
-describe('SplashArtComponent', () => {
-  let component: SplashArtComponent;
-  let fixture: ComponentFixture<SplashArtComponent>;
+describe('EsperaComponent', () => {
+  let component: EsperaComponent;
+  let fixture: ComponentFixture<EsperaComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SplashArtComponent]
+      imports: [EsperaComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(SplashArtComponent);
+    fixture = TestBed.createComponent(EsperaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

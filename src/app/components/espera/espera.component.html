@@ -1,0 +1,19 @@
+<div class="container">
+    
+    @if(this.usuarioFire)
+    {
+        <div>
+            @if(this.usuarioFire.emailVerified)
+            {
+                <div class="title text-center">¡BIENVENIDO!<br><span>Verifique el correo.</span></div>
+            }
+        </div>
+        
+        <div>
+            @if(this.especialista && !this.especialista.verificado)
+            {
+                <div class="title text-center">El administrador debe validar su cuenta.</div>
+            }
+        </div>
+    }
+</div>
