@@ -1,0 +1,19 @@
+<div class="flex flex-col items-center p-4 bg-white shadow-md rounded-lg">
+    <label class="flex items-center space-x-2">
+      <input 
+        type="checkbox" 
+        appCaptcha 
+        (captchaSolved)="onCaptchaSolved($event)"
+        class="form-checkbox h-5 w-5 text-blue-600"
+      >
+      <span class="text-sm font-medium text-gray-700">No soy un robot</span>
+    </label>
+  
+    <div *ngIf="captchaSolved; else notSolved" class="mt-4 text-green-600">
+      <p>¡Captcha resuelto correctamente!</p>
+    </div>
+    <ng-template #notSolved>
+      <p class="mt-4 text-red-600">Captcha no resuelto.</p>
+    </ng-template>
+  </div>
+  

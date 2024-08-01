@@ -1,0 +1,24 @@
+<div class="container">
+    <div *ngIf="pacientesAtendidos.length">
+        <div *ngFor="let paciente of pacientesAtendidos" class="card bg-white shadow rounded-lg mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ paciente.nombre }}</h5>
+                <div *ngIf="ultimosTurnosPaciente.length">
+                    <h6 class="card-subtitle mb-2 text-muted">Últimos Turnos:</h6>
+                    @for(turno of ultimosTurnosPaciente; track turno.id)
+                    {
+                    <ul>
+                        @if(paciente.uid == turno.paciente.uid)
+                        {
+                            <li>
+                                Fecha: {{ turno.fechaTurno | date: 'medium' }}
+                            </li>
+                        }   
+                    </ul>
+                    }   
+                    <button (click)="mostrarHistorial(paciente)" class="btn">Ver Historial clínico</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

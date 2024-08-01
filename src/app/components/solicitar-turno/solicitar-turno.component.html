@@ -1,53 +1,86 @@
 <div class="container">
-    <div class="flex justify-center">
-        <div class="mb-8">
-            <div class="bg-white shadow rounded-lg">
-                <div class="p-8 lg:p-12">
-                    <h2 class="text-center mb-5 uppercase">Solicitar Turno</h2>
-                    <div class="contenedor-imagenes flex flex-wrap justify-center gap-8">
-                        <div *ngFor="let especialista of especialistas" class="text-center">
-                            <h4>{{ especialista.nombre }}</h4>
-                            <img (click)="seleccionarEspecialista(especialista)" class="imagen rounded-full"
-                                [src]="especialista.imagen.foto1" alt="Imagen de {{ especialista.nombre }}">
+    <div [@scaleInVerTop]>
+        <div class="flex justify-center">
+            <div class="mb-8 w-full max-w-3xl">
+                <div class="bg-white shadow rounded-lg">
+                    <div class="p-8 lg:p-12">
+                        <h2 class="text-center mb-5 uppercase text-xl font-semibold">Solicitar Turno</h2>
+    
+                        <div class="text-center my-8 border-b border-gray-300 pb-8"
+                            *ngIf="usuarioLogueado?.tipo == 'Administrador'">
+                            <h4 class="uppercase mb-2">Ingrese el DNI del paciente</h4>
+                            <input type="number" placeholder="DNI" id="DNI" [(ngModel)]="dniPaciente"
+                                (input)="buscarPaciente()" class="border rounded p-2 w-full max-w-xs mx-auto">
                         </div>
-                    </div>
-
-                    <div *ngIf="especialistaSeleccionado" >
-                        <h3 class="uppercase text-center mt-4">Especialidad</h3>
-                        <div class="seccion-especialidades mt-7 flex justify-center" >
-                            <div *ngFor="let especialidad of especialidadesMostrar">
-                                <div (click)="mostrarDias()" class="bg-gray-300 rounded-lg p-4">
-                                    <img  class="img-especialidad" [src]="'assets/resources/img/' + especialidad + '.png'"
+    
+                        <div *ngIf="usuarioLogueado?.tipo == 'Paciente' || (usuarioLogueado?.tipo == 'Administrador' && pacienteEncontrado)"
+                            class="contenedor-imagenes flex flex-wrap justify-center gap-8 border-b border-gray-300 pb-8">
+                            <div *ngFor="let especialista of especialistas" class="text-center">
+                                <h4 class="font-semibold mb-2">{{ especialista.nombre }}</h4>
+                                <img (click)="seleccionarEspecialista(especialista)"
+                                    class="imagen rounded-full cursor-pointer hover:shadow-lg transition duration-300"
+                                    [src]="especialista.imagen.foto1" alt="Imagen de {{ especialista.nombre }}">
+                            </div>
+                        </div>
+    
+                        <div *ngIf="especialistaSeleccionado" class="border-b border-gray-300 pb-8">
+                            <h3 class="uppercase text-center mt-4 font-semibold">Especialidad</h3>
+                            <div class="seccion-especialidades mt-7 flex flex-wrap justify-center gap-4">
+                                <div *ngFor="let especialidad of especialidadesMostrar"
+                                    (click)="mostrarDias(especialidad)"
+                                    [ngClass]="{'selected': especialidadSeleccionada === especialidad, 'unselected': especialidadSeleccionada !== especialidad}"
+                                    class="rounded-lg p-4 cursor-pointer hover:shadow-lg transition duration-300">
+                                    <img class="img-especialidad"
+                                        [src]="'assets/resources/img/' + especialidad + '.png'"
                                         alt="Imagen de {{ especialidad }}">
-                                    <h3 class="text-center">{{especialidad}}</h3>
+                                    <h3 class="text-center mt-2">{{especialidad}}</h3>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div *ngIf="diasDisponibles.length > 0" class=" flex flex-wrap justify-center gap-x-3">
-                        <div *ngFor="let dia of diasDisponibles">
-                            <button (click)="mostrarFechaPedida(dia)" class="bg-teal-500 text-white mt-2 py-2 px-4 hover:bg-teal-700 transition duration-300 w-40">{{dia}}</button>
+    
+                        <div *ngIf="diasDisponibles.length > 0" class="border-b border-gray-300 pb-8">
+                            <h3 class="uppercase text-center mt-4 font-semibold">Días Disponibles</h3>
+                            <div class="flex flex-wrap justify-center gap-3 mt-4">
+                                <div *ngFor="let dia of diasDisponibles">
+                                    <button (click)="mostrarFechaPedida(dia)"
+                                        [ngClass]="{'selected': diaSeleccionado === dia, 'unselected': diaSeleccionado !== dia}"
+                                        class="mt-2 py-2 px-4 rounded hover:shadow-lg transition duration-300 w-40">{{dia}}</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div *ngIf="fechasDisponibles.length > 0" class=" flex flex-wrap justify-center gap-x-3">
-                        <div *ngFor="let fecha of fechasDisponibles">
-                            <button (click)="mostrarHorarioPedido(fecha)" class="bg-teal-500 text-white mt-2 py-2 px-4 hover:bg-teal-700 transition duration-300 w-40">{{fecha}}</button>
+    
+                        <div *ngIf="fechasDisponibles.length > 0" class="border-b border-gray-300 pb-8">
+                            <h3 class="uppercase text-center mt-4 font-semibold">Fechas disponibles</h3>
+                            <div class="flex flex-wrap justify-center gap-3 mt-4">
+                                <div *ngFor="let fecha of fechasDisponibles">
+                                    <button (click)="mostrarHorarioPedido(fecha)"
+                                        [ngClass]="{'selected': fechaSeleccionado === fecha, 'unselected': fechaSeleccionado !== fecha}"
+                                        class="mt-2 py-2 px-4 rounded hover:shadow-lg transition duration-300 w-40">{{fecha}}</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div *ngIf="horasDisponibles.length > 0" class=" flex flex-wrap justify-center gap-x-3">
-                        <div *ngFor="let hora of horasDisponibles">
-                            <button (click)="horarioFinal(hora)" class="bg-teal-500 text-white rounded-lg mt-2 py-2 px-4 hover:bg-teal-700 transition duration-300 w-40">{{hora}}</button>
+    
+                        <div *ngIf="horasDisponibles.length > 0" class="border-b border-gray-300 pb-8">
+                            <h3 class="uppercase text-center mt-4 font-semibold">Horarios Disponibles</h3>
+                            <div class="flex flex-wrap justify-center gap-3 mt-4">
+                                <div *ngFor="let hora of horasDisponibles">
+                                    <button (click)="horarioFinal(hora)"
+                                        [ngClass]="{'selected': horaSeleccionada === hora, 'unselected': horaSeleccionada !== hora}"
+                                        class="mt-2 py-2 px-4 rounded hover:shadow-lg transition duration-300 w-40">{{hora}}</button>
+                                </div>
+                            </div>
                         </div>
+    
+                        <div *ngIf="subirTurno" class="mt-4 text-center">
+                            <button (click)="cargarTurno()"
+                                class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300 uppercase">Cargar
+                                Turno</button>
+                        </div>
+    
                     </div>
-
-                    <div *ngIf="subirTurno">
-                        <button (click)="cargarTurno()" class="">Cargar Turno</button>
-                    </div>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
+<app-footer></app-footer>

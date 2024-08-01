@@ -1,41 +1,79 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FooterComponent } from '../footer/footer.component';
-import { FirestorageService } from '../../services/firestorage.service';
 import { Especialista } from '../../interfaces/especialista';
 import { Paciente } from '../../interfaces/paciente';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { LoaderComponent } from '../loader/loader.component';
 import { FirestoreService } from '../../services/firestore.service';
-import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { max } from 'rxjs';
+import { Usuario } from '../../interfaces/usuario';
+import { RecaptchaModule } from 'ng-recaptcha';
+import { CaptchaPropioComponent } from '../captcha-propio/captcha-propio.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { OrdenarEspecialidadesPipe } from '../../pipes/ordenar-especialidades.pipe';
+
+
+
+const animacion = trigger('bounceInLeft', [
+  state('void', style({
+    transform: 'translateX(-400px)',
+    opacity: 0
+  })),
+  state('*', style({
+    transform: 'translateX(0)',
+    opacity: 1
+  })),
+  transition('void => *', [
+    animate('1.1s ease-in', style({
+      transform: 'translateX(0)',
+      opacity: 1
+    })),
+    animate('0.6s ease-out', style({
+      transform: 'translateX(68px)'
+    })),
+    animate('0.3s ease-in', style({
+      transform: 'translateX(0)'
+    })),
+    animate('0.4s ease-out', style({
+      transform: 'translateX(32px)'
+    })),
+    animate('0.2s ease-in', style({
+      transform: 'translateX(0)'
+    })),
+    animate('0.1s ease-out', style({
+      transform: 'translateX(8px)'
+    })),
+    animate('0.1s ease-out', style({
+      transform: 'translateX(0)'
+    }))
+  ])
+])
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, CommonModule, FooterComponent, NavbarComponent, LoaderComponent, MatChipsModule, MatIconModule],
+  imports: [ReactiveFormsModule, RouterLink, CommonModule, FooterComponent, NavbarComponent, LoaderComponent, MatChipsModule, MatIconModule, RecaptchaModule, CaptchaPropioComponent, OrdenarEspecialidadesPipe],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  styleUrl: './register.component.css',
+  animations:[animacion]
 })
-export class RegisterComponent implements OnInit {
-  especialistaForm: any;
+export class RegisterComponent implements OnInit, AfterViewInit{
   onFileSelected: any;
-  eliminarEspecialidad(a: any) {
 
-  }
   form!: any | FormGroup;
   registrarPaciente!: boolean;
   registrarEspecialista!: boolean;
   formEspecialista: any | FormGroup;
   imagenPerfilUno?: File;
   imagenPerfilDos?: File;
-  usuario: any;
+  usuario: Usuario | undefined;
   especialidades!: any[];
   isLoading: boolean = false;
   agregarEspecialidad: boolean = false;
@@ -44,7 +82,8 @@ export class RegisterComponent implements OnInit {
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   encontro: boolean = false;
-  
+
+  @ViewChild('captcha') captchaComponent!: CaptchaPropioComponent;
 
   constructor(private router: Router, private fb: FormBuilder, private AuthService: AuthService, private firestore: FirestoreService, private snackBar: MatSnackBar) {
     this.form = this.fb.group({
@@ -71,9 +110,8 @@ export class RegisterComponent implements OnInit {
 
     this.registrarPaciente = false;
     this.registrarEspecialista = false;
-
-
-
+    
+    this.ngAfterViewInit();
     // this.especialidades = ['Cardiología', 'Dermatología', 'Neurología', 'Pediatría', 'otra'];
   }
 
@@ -85,12 +123,9 @@ export class RegisterComponent implements OnInit {
       }
     });
   }
-
-  test()
-  {
-    console.log(this.formEspecialista.controls.dni);
+  
+  ngAfterViewInit() {
   }
-
 
   dniValidar(control: AbstractControl): ValidationErrors | null {
 
@@ -112,32 +147,6 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  // onCheckboxChange(event: any): void {
-  //   const especialidad = event.target.value;
-  //   const especialidades = this.formEspecialista.get('especialidad')?.value || [];
-  //   console.log(especialidad);
-
-  //   if (event.target.checked) {
-  //     especialidades.push(especialidad);
-  //   } else {
-  //     const index = especialidades.indexOf(especialidad);
-  //     if (index > -1) {
-  //       especialidades.splice(index, 1);
-  //     }
-  //   }
-  //   this.formEspecialista.get('especialidad')?.setValue(especialidades);
-  // }
-
-  // addNuevaEspecialidad(): void {
-  //   console.log('entro');
-  //   const nuevaEspecialidad = this.formEspecialista.get('nuevaEspecialidad')?.value;
-  //   if (nuevaEspecialidad) {
-  //     let especialidades = this.formEspecialista.get('especialidad')?.value || [];
-  //     especialidades = especialidades.filter((e: string) => e !== 'otra');
-  //     especialidades.push(nuevaEspecialidad);
-  //     this.formEspecialista.get('especialidad')?.setValue(especialidades);
-  //   }
-  // }
 
   remove(especialidad: any): void {
     const index = this.especialidadesMostrar.indexOf(especialidad);
@@ -184,12 +193,10 @@ export class RegisterComponent implements OnInit {
   }
 
   async register() {
-  
-    this.test();
-    if ((this.form.valid || this.formEspecialista.valid) && this.especialidadesMostrar.length > 0) {
+
+    if ((this.form.valid || this.formEspecialista.valid) && this.especialidadesMostrar.length > 0 && this.captchaComponent.captchaSolved) {
       try {
         this.isLoading = true;
-
         if (this.form.valid) {
 
           const paciente: Paciente = {
@@ -238,14 +245,25 @@ export class RegisterComponent implements OnInit {
         }
 
         this.usuario = this.AuthService.getUser('usuario');
-        if (this.usuario) {
-          this.router.navigate(['/espera']);
-        }
+        
+        this.router.navigate(['/espera']);
       } catch (error) {
         console.log(error);
       } finally {
         this.isLoading = false;
       }
+    }
+    else if(!this.captchaComponent.captchaSolved)
+    {
+      this.snackBar.open(`Complete el captcha.`, 'Close', {
+        duration: 2000
+      });
+    }
+    else
+    {
+      this.snackBar.open(`Complete todos los campos.`, 'Close', {
+        duration: 2000
+      });
     }
   }
 }

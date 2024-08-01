@@ -3,7 +3,7 @@
     @if(this.usuarioFire)
     {
         <div>
-            @if(this.usuarioFire.emailVerified)
+            @if(!this.usuarioFire.emailVerified)
             {
                 <div class="title text-center">¡BIENVENIDO!<br><span>Verifique el correo.</span></div>
             }

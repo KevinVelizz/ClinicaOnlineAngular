@@ -1,0 +1,120 @@
+<div class="container">
+    <div class="p-4 space-y-4">
+        <div class="bg-white shadow-md rounded-lg border border-gray-300 p-4 max-w-full">
+            <h2 class="text-xl font-semibold mb-4">Registro de Ingresos</h2>
+            <div class="max-h-[400px] overflow-y-auto border border-gray-300">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="border border-gray-300 px-4 py-2 text-left">Nombre Usuario</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Correo Usuario</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Fecha</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let log of logs">
+                            <td class="border border-gray-300 px-4 py-2">{{ log.nombreUsuario }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ log.correoUsuario }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ log.diaHorario.fecha }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ log.diaHorario.hora }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button (click)="descargarExcelLogs()"
+                class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Descargar a Excel
+            </button>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg border border-gray-300 p-4 max-w-full">
+            <h2 class="text-xl font-semibold mb-4">Cantidad de Turnos por Especialidad</h2>
+            <canvas id="cantidadTurnosPorEspecialidad" class="w-full h-64"></canvas>
+            <button (click)="descargarPDFCantidadTurno()"
+                class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Descargar a PDF
+            </button>
+            <button (click)="descargarExcelCantidadTurno()"
+                class="mt-4 px-4 py-2 ml-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Descargar a Excel
+            </button>
+        </div>
+
+        <div class="p-4 space-y-4">
+            <div class="bg-white shadow-md rounded-lg border border-gray-300 p-4 max-w-full">
+                <h2 class="text-xl font-semibold mb-4">Cantidad de Turnos por Día</h2>
+                <div class="relative w-full h-64 flex items-center justify-center">
+                    <canvas id="cantidadTurnosPorDia" class="absolute"></canvas>
+                </div>
+                <button (click)="descargarExcelCantidadTurnoPorDia()"
+                    class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    Descargar a Excel
+                </button>
+            </div>
+        </div>
+
+
+
+        <div class="bg-white shadow-md rounded-lg border border-gray-300 p-4 max-w-full">
+            <h2 class="text-xl font-semibold mb-4">Cantidad de Turnos solicitados por Médico</h2>
+
+            <div class="mb-4">
+                <label for="fechaInicio" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+                <input id="fechaInicio" type="date" [(ngModel)]="fechaInicio"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+
+            <div class="mb-4">
+                <label for="fechaFin" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
+                <input id="fechaFin" type="date" [(ngModel)]="fechaFin"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+
+            <div class="relative w-full h-64 flex items-center justify-center">
+                <canvas id="cantidadTurnosPorMedicoSolicitado" class="absolute"></canvas>
+            </div>
+
+            <button (click)="crearGraficoTurnosPorMedicoSolicitado()"
+                class="mt-4 px-4 py-2 bg-blue-500 mr-2 text-white rounded hover:bg-blue-600">
+                Generar Gráfico
+            </button>
+
+            <button (click)="descargarExcelTurnosPorMedicoSolicitado()" [disabled]="!fechaInicio || !fechaFin"
+                class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Descargar Excel
+            </button>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg border border-gray-300 p-4 max-w-full">
+            <h2 class="text-xl font-semibold mb-4">Cantidad de Turnos Finalizados por Médico</h2>
+
+            <div class="mb-4">
+                <label for="fechaInicio" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+                <input id="fechaInicio" type="date" [(ngModel)]="fechaInicioDos"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+
+            <div class="mb-4">
+                <label for="fechaFin" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
+                <input id="fechaFin" type="date" [(ngModel)]="fechaFinDos"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+
+            <div class="relative w-full h-64 flex items-center justify-center">
+                <canvas id="cantidadTurnosPorMedicoRealizado" class="absolute"></canvas>
+            </div>
+
+            <button (click)="crearGraficoTurnosPorMedicoRealiazdo()"
+                class="mt-4 px-4 py-2 bg-blue-500 mr-2 text-white rounded hover:bg-blue-600">
+                Generar Gráfico
+            </button>
+
+            <button (click)="descargarExcelTurnosPorMedicoRealizado()" [disabled]="!fechaInicio || !fechaFin"
+                class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Descargar Excel
+            </button>
+        </div>
+
+    </div>
+</div>

@@ -1,101 +1,142 @@
 <div class="container">
-    <div class="flex gap-x-3 mb-4">
-        <button (click)="elegirRegistrar(false)" class="button-confirm">Registrar Admin</button>
-        <button (click)="elegirRegistrar(true)" class="button-confirm">Confirmar email</button>
-    </div>
-
-    @if(verListado)
-    {
-    <app-listado-especialistas [especialistas]="especialistas"
-        (especialistaSeleccionado)="onEspecialistaSeleccionada($event)"></app-listado-especialistas>
-    <app-detalle-especialista [especialista]="especialistaSeleccionado"></app-detalle-especialista>
-    }
-
-    @if(registrarAdmin)
-    {
-    <form class="form mt-3 mb-5 flex-row" [formGroup]="form">
-        <div class="img-logo"></div>
-
-        <div class="title text-center uppercase"><br><span class="lowercase">Registre a continuación</span>
+    <div [@slideInEllipticBottomFwd]>
+        <div class="flex gap-x-3 mb-4">
+            <button (click)="elegirRegistrar(false)" class="button-confirm">Registrar Admin</button>
+            <button (click)="elegirRegistrar(true)" class="button-confirm">Confirmar email</button>
+            <button (click)="isSeccionPaciente = true" class="button-confirm">Sección Pacientes</button>
         </div>
 
-        <h4 class="text-center text-2xl font-bold">Administrador</h4>
-        <div class="contenedor-inputs">
-            <!-- Nombre -->
-            <div>
-                <input class="input text-gl" name="nombre" placeholder="Nombre" type="text" formControlName="nombre">
-                @if(form.get('nombre')?.touched && form.get('nombre')?.invalid)
-                {
-                <p>El nombre es requerido.</p>
-                }
-            </div>
+        <div>
+            @if(verListado && !isSeccionPaciente)
+            {
+            <app-listado-especialistas [especialistas]="especialistas"
+                (especialistaSeleccionado)="onEspecialistaSeleccionada($event)"></app-listado-especialistas>
+            <app-detalle-especialista [especialista]="especialistaSeleccionado"></app-detalle-especialista>
+            }
+        </div>
 
-            <!-- apellido -->
-            <div>
-                <input class="input text-gl" name="apellido" placeholder="Apellido" type="text"
-                    formControlName="apellido">
-                @if(form.get('apellido')?.touched && form.get('apellido')?.invalid)
-                {
-                <p>El apellido es requerido.</p>
-                }
-            </div>
+        <div>
+            @if(registrarAdmin && !isSeccionPaciente)
+            {
+            <form class="form mt-3 mb-5 flex-row" [formGroup]="form">
+                <div class="img-logo"></div>
 
-            <!-- edad -->
-            <div>
-                <input class="input text-gl" name="edad" placeholder="Edad" type="number" formControlName="edad">
-                @if(form.get('edad')?.touched && form.get('edad')?.invalid)
-                {
-                <p>La edad es requerida.</p>
-                }
-            </div>
-
-            <!-- dni -->
-            <div>
-                <input class="input text-gl" name="dni" placeholder="DNI" type="number" formControlName="dni">
-                @if(form.get('dni')?.touched && form.get('dni')?.invalid)
-                {
-                <p>El DNI es requerido.</p>
-                }
-            </div>
-
-            <!-- contraseña -->
-            <div>
-                <input class="input text-gl" name="password" placeholder="Contraseña" type="password"
-                    formControlName="password">
-                @if(form.get('password')?.touched && form.get('password')?.invalid)
-                {
-                <p>La contraseña es requerida.</p>
-                }
-            </div>
-
-            <!-- correo -->
-            <div>
-                <input class="input text-gl" name="email" placeholder="Correo" type="email" formControlName="correo">
-                @if(form.get('correo')?.touched && form.get('correo')?.invalid)
-                {
-                <div>
-                    @if(form.get('correo')?.errors?.['required'])
-                    {
-                    <p>El correo electrónico es requerido.</p>
-                    }
-                    @if(form.get('correo')?.errors?.email)
-                    {
-                    <p>El correo electrónico es invalido.</p>
-                    }
+                <div class="title text-center uppercase"><br><span class="lowercase">Registre a continuación</span>
                 </div>
-                }
-            </div>
-            <!-- foto -->
-            <div>
-                <input class="input text-gl" type="file" formControlName="imagenPerfilUno" name="imagenPerfil"
-                    accept="image/png, image/jpeg" (change)="seleccionarFotoPerfilUno($event)">
-            </div>
-           
-        </div>
-        <button class="button-confirm" (click)="register()">Registrarse →</button>
-    </form>
-    }
 
+                <h4 class="text-center text-2xl font-bold">Administrador</h4>
+                <div class="contenedor-inputs">
+                    <!-- Nombre -->
+                    <div>
+                        <input class="input text-gl" name="nombre" placeholder="Nombre" type="text"
+                            formControlName="nombre">
+                        @if(form.get('nombre')?.touched && form.get('nombre')?.invalid)
+                        {
+                        <p>El nombre es requerido.</p>
+                        }
+                    </div>
+
+                    <!-- apellido -->
+                    <div>
+                        <input class="input text-gl" name="apellido" placeholder="Apellido" type="text"
+                            formControlName="apellido">
+                        @if(form.get('apellido')?.touched && form.get('apellido')?.invalid)
+                        {
+                        <p>El apellido es requerido.</p>
+                        }
+                    </div>
+
+                    <!-- edad -->
+                    <div>
+                        <input class="input text-gl" name="edad" placeholder="Edad" type="number"
+                            formControlName="edad">
+                        @if(form.get('edad')?.touched && form.get('edad')?.invalid)
+                        {
+                        <p>La edad es requerida.</p>
+                        }
+                    </div>
+
+                    <!-- dni -->
+                    <div>
+                        <input class="input text-gl" name="dni" placeholder="DNI" type="number" formControlName="dni">
+                        @if(form.get('dni')?.touched && form.get('dni')?.invalid)
+                        {
+                        <p>El DNI es requerido.</p>
+                        }
+                    </div>
+
+                    <!-- contraseña -->
+                    <div>
+                        <input class="input text-gl" name="password" placeholder="Contraseña" type="password"
+                            formControlName="password">
+                        @if(form.get('password')?.touched && form.get('password')?.invalid)
+                        {
+                        <p>La contraseña es requerida.</p>
+                        }
+                    </div>
+
+                    <!-- correo -->
+                    <div>
+                        <input class="input text-gl" name="email" placeholder="Correo" type="email"
+                            formControlName="correo">
+                        @if(form.get('correo')?.touched && form.get('correo')?.invalid)
+                        {
+                        <div>
+                            @if(form.get('correo')?.errors?.['required'])
+                            {
+                            <p>El correo electrónico es requerido.</p>
+                            }
+                            @if(form.get('correo')?.errors?.email)
+                            {
+                            <p>El correo electrónico es invalido.</p>
+                            }
+                        </div>
+                        }
+                    </div>
+                    <!-- foto -->
+                    <div>
+                        <input class="input text-gl" type="file" formControlName="imagenPerfilUno" name="imagenPerfil"
+                            accept="image/png, image/jpeg" (change)="seleccionarFotoPerfilUno($event)">
+                    </div>
+
+                    <div>
+                        <app-captcha-propio #captcha></app-captcha-propio>
+                    </div>
+
+                </div>
+                <button class="button-confirm" (click)="register()">Registrarse →</button>
+            </form>
+            }
+        </div>
+
+        <div>
+            @if(isSeccionPaciente)
+            {
+            <div class="mx-auto p-6 bg-white shadow-md rounded-lg overflow-hidden">
+                <div class="text-center mb-6">
+                    <h2 class="uppercase my-2">Descargar datos de los pacientes en excel</h2>
+                    <button (click)="descargarExcel(usuario, true)" class="btn btn-primary">Descargar todos los
+                        pacientes</button>
+                </div>
+                <div *ngIf="pacientes.length" class="mx-auto mt-6">
+                    <h2 class="text-center mb-4">Descargar de manera individual cada paciente.</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        <div *ngFor="let usuario of pacientes" class="">
+                            <button (click)="descargarExcel(usuario, false)" class="Btn">
+
+                                <div class="sign">
+                                    <img [src]="usuario.imagen.foto1" alt="{{ usuario.nombre }}"
+                                        class="rounded-full w-full h-full mx-auto">
+                                </div>
+                                <div class="text">{{usuario.nombre}}</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
 </div>
 <app-footer></app-footer>
 <app-loader [isLoading]="isLoading"></app-loader>

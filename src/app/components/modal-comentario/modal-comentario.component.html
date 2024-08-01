@@ -1,10 +1,120 @@
-<h2 mat-dialog-title>Agregue un comentario</h2>
-<mat-dialog-content class="mat-typography">
-  <mat-form-field>
-    <input matInput [(ngModel)]="comentario" placeholder="Escriba su comentario aquí" />
-  </mat-form-field>
-</mat-dialog-content>
-<mat-dialog-actions align="center">
-  <button mat-button mat-dialog-close>Cancelar</button>
-  <button mat-button [mat-dialog-close]="comentario" cdkFocusInitial>Aceptar</button>
-</mat-dialog-actions>
+<div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-md">
+    <div class="px-4 py-2 border-b border-gray-200">
+      <h5 class="text-lg font-semibold">Historial Clínico</h5>
+    </div>
+    <div class="p-4 overflow-y-auto max-h-[80vh]">
+      <form [formGroup]="historialForm" (ngSubmit)="enviarEncuesta()">
+        <div class="flex flex-col mb-3">
+          <label for="altura" class="text-sm font-medium">Altura:</label>
+          <input id="altura" type="number" formControlName="altura" placeholder="cm"
+            class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div *ngIf="historialForm!.get('altura')!.invalid && historialForm!.get('altura')!.touched"
+            class="text-red-500 text-xs mt-1">
+            Altura debe estar entre 40 y 220 cm.
+          </div>
+        </div>
+        <div class="flex flex-col mb-3">
+          <label for="peso" class="text-sm font-medium">Peso:</label>
+          <input id="peso" type="number" formControlName="peso" placeholder="kg"
+            class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div *ngIf="historialForm!.get('peso')!.invalid && historialForm!.get('peso')!.touched"
+            class="text-red-500 text-xs mt-1">
+            Peso debe estar entre 2 y 300 kg.
+          </div>
+        </div>
+        <div class="flex flex-col mb-3">
+          <label for="temperatura" class="text-sm font-medium">Temperatura:</label>
+          <input id="temperatura" type="number" formControlName="temperatura" placeholder="°C"
+            class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div *ngIf="historialForm!.get('temperatura')!.invalid && historialForm!.get('temperatura')!.touched"
+            class="text-red-500 text-xs mt-1">
+            Temperatura debe estar entre 35 y 45 °C.
+          </div>
+        </div>
+        <div class="flex flex-col mb-3">
+          <label for="presion" class="text-sm font-medium">Presión:</label>
+          <input id="presion" type="number" formControlName="presion" placeholder="PA"
+            class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div *ngIf="historialForm!.get('presion')!.invalid && historialForm!.get('presion')!.touched"
+            class="text-red-500 text-xs mt-1">
+            Presión debe estar entre 40 y 200 PA.
+          </div>
+        </div>
+
+        <div class="my-4">
+          <button type="button" (click)="agregarDatosDinamico()"
+            class="px-3 py-1 bg-green-500 text-white rounded-md shadow hover:bg-green-600"
+            [disabled]="datosDinamicos.length >= 3">
+            Agregar Información Adicional
+          </button>
+        </div>
+
+        <div formArrayName="datosDinamicos">
+          <div *ngFor="let dato of datosDinamicos.controls; let i = index;" [formGroupName]="i"
+            class="flex items-center space-x-3 mb-3">
+            <div class="flex flex-col flex-grow">
+              <label for="clave{{i}}" class="text-sm font-medium">{{i + 1}}. Clave:</label>
+              <input id="clave{{i}}" type="text" formControlName="clave"
+                class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="flex flex-col flex-grow">
+              <label for="valor{{i}}" class="text-sm font-medium">Valor:</label>
+              <input id="valor{{i}}" type="text" formControlName="valor"
+                class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <button type="button" (click)="eliminarDatosDinamico(i)"
+              class="px-3 py-1 bg-red-500 text-white rounded-md shadow hover:bg-red-600">
+              Eliminar
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col mb-4">
+          <label for="rango" class="text-sm font-medium">Rango (0-100):</label>
+          <input id="claveRango" type="text" formControlName="claveRango" placeholder="Clave para rango"
+            class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <input id="rango" type="range" formControlName="rango" min="0" max="100"
+            class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="text-sm mt-1">Valor: {{historialForm.get('rango')?.value}}</div>
+        </div>
+
+        <div class="flex flex-col mb-4">
+          <label for="numCuadro" class="text-sm font-medium">Cuadro de Texto Numérico:</label>
+          <input id="claveNumerico" type="text" formControlName="claveNumerico" placeholder="Clave para número"
+            class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <input id="numCuadro" type="number" formControlName="numCuadro"
+            class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div class="flex flex-col mb-4">
+          <label for="claveSwitch" class="text-sm font-medium">Switch:</label>
+          <input id="claveSwitch" type="text" formControlName="claveSwitch" placeholder="Clave para switch"
+            class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="flex items-center space-x-2 mt-1">
+            <label for="si">Si</label>
+            <input id="si" type="radio" formControlName="switchControl" [value]="true">
+            <label for="no">No</label>
+            <input id="no" type="radio" formControlName="switchControl" [value]="false">
+          </div>
+        </div>
+
+        <div class="flex flex-col mb-4">
+          <label for="comentario" class="text-sm font-medium">Comentario:</label>
+          <textarea id="comentario" formControlName="comentario"
+            class="mt-1 px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+
+        <div class="flex justify-end space-x-2 border-t border-gray-200 pt-4">
+          <button type="button" class="px-3 py-1 bg-gray-500 text-white rounded-md shadow hover:bg-gray-600"
+            (click)="historialCompletado.emit(undefined)">
+            Cerrar
+          </button>
+          <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600"
+            [disabled]="historialForm!.invalid">
+            Enviar Encuesta
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

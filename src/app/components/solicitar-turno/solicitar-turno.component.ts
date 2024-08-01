@@ -1,20 +1,41 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
-import { Form, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Especialista } from '../../interfaces/especialista';
 import { Paciente } from '../../interfaces/paciente';
 import { FirestoreService } from '../../services/firestore.service';
 import { AuthService } from '../../services/auth.service';
 import { DiasPipe } from '../../pipes/dias.pipe';
 import { Turno } from '../../interfaces/turno';
-import { Timestamp } from 'rxjs';
+import { Usuario } from '../../interfaces/usuario';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { FooterComponent } from '../footer/footer.component';
+
+const animacion = [trigger('scaleInVerTop', [
+  state('void', style({
+    transform: 'scaleY(0)',
+    transformOrigin: '100% 0%',
+    opacity: 1
+  })),
+  state('*', style({
+    transform: 'scaleY(1)',
+    transformOrigin: '100% 0%',
+    opacity: 1
+  })),
+  transition('void => *', [
+    animate('1s cubic-bezier(0.250, 0.460, 0.450, 0.940)')
+  ])
+])]
 
 @Component({
   selector: 'app-solicitar-turno',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, FooterComponent],
   templateUrl: './solicitar-turno.component.html',
-  styleUrl: './solicitar-turno.component.css'
+  styleUrl: './solicitar-turno.component.css',
+  animations: [animacion]
 })
 export class SolicitarTurnoComponent {
   especialidades: any[] = [];
@@ -30,12 +51,30 @@ export class SolicitarTurnoComponent {
   horarioTurno: { [dia: string]: { desde: string, hasta: string }[] } = {};
   subirTurno: boolean = false;
 
+  especialidadSeleccionada: string = "";
+
   fechaFinal: Date = new Date();
+  
+  fechaSeleccionado!: any;
 
   turnosFirebase: Turno[] = [];
 
-  constructor(private firestore: FirestoreService, private authService: AuthService, private datePipe: DatePipe) {
+  usuarioLogueado: Usuario | undefined;
 
+  dniPaciente!: number;
+
+  pacienteEncontrado: Usuario | undefined;
+
+  router = inject(Router);
+  horaSeleccionada: any;
+  diaSeleccionado: any;
+
+  constructor(private firestore: FirestoreService, private authService: AuthService, private datePipe: DatePipe, private snackBar: MatSnackBar) {
+
+    this.especialistas = [];
+    this.especialistasFiltrados = [];
+
+    this.usuarioLogueado = authService.getUser('usuario');
     this.firestore.usuarios.subscribe(users => {
       if (users) {
         users.forEach(user => {
@@ -60,9 +99,7 @@ export class SolicitarTurnoComponent {
           this.turnosFirebase[index].fechaTurno = this.convertirTimestampADate(this.turnosFirebase[index].fechaTurno);
         }
       }
-      console.log(this.turnosFirebase);
     });
-    
   }
 
   ngOnInit(): void {
@@ -75,11 +112,15 @@ export class SolicitarTurnoComponent {
 
   seleccionarEspecialista(especialista: Especialista) {
     this.subirTurno = false;
+    this.diasDisponibles = [];
+    this.horasDisponibles = [];
+    this.fechasDisponibles = [];
     this.especialistaSeleccionado = especialista;
     this.especialidadesEspecialista(especialista.especialidad);
   }
 
-  mostrarDias() {
+  mostrarDias(especialidad: string) {
+    this.especialidadSeleccionada = especialidad;
     this.diasDisponibles = [];
     this.diasDisponibles = Object.keys(this.especialistaSeleccionado.disponibilidad);
   }
@@ -151,6 +192,7 @@ export class SolicitarTurnoComponent {
   mostrarFechaPedida(dia: string) {
     this.horasDisponibles = [];
     this.fechasDisponibles = [];
+    this.diaSeleccionado = dia;
     this.fechaSeleccionadoElDia(dia);
     const diasPipe = new DiasPipe();
     const numeroDia = diasPipe.transform(dia);
@@ -163,18 +205,27 @@ export class SolicitarTurnoComponent {
       }
       nuevaFecha.setDate(nuevaFecha.getDate() + 1);
     }
-
   }
 
   mostrarHorarioPedido(fecha: string) {
     this.horasDisponibles = [];
+    this.fechaSeleccionado = fecha;
     const [year, mes, dia] = fecha.split('/');
+    const fechaBusqueda = new Date(Number(year), Number(mes) - 1, Number(dia));
+
     this.horariosDisponibles.forEach(fecha => {
 
-      if (Number(year) == fecha.getFullYear() && Number(mes) - 1 == fecha.getMonth() && Number(dia) == fecha.getDate())
-      
-        
-        this.horasDisponibles.push(`${fecha.getHours().toString().padStart(2, '0')}:${fecha.getMinutes().toString().padStart(2, '0')}`);
+      if (fecha.getFullYear() === fechaBusqueda.getFullYear() &&
+        fecha.getMonth() === fechaBusqueda.getMonth() &&
+        fecha.getDate() === fechaBusqueda.getDate()) {
+        const isReserved = this.turnosFirebase.some(turno => {
+          const fechaTurno = new Date(turno.fechaTurno);
+          return fecha.getTime() === fechaTurno.getTime();
+        });
+        if (!isReserved) {
+          this.horasDisponibles.push(`${fecha.getHours().toString().padStart(2, '0')}:${fecha.getMinutes().toString().padStart(2, '0')}`);
+        }
+      }
     });
 
     this.fechaFinal.setDate(Number(dia));
@@ -182,23 +233,52 @@ export class SolicitarTurnoComponent {
     this.fechaFinal.setFullYear(Number(year));
   }
 
+  buscarPaciente() {
+    this.firestore.usuarios.subscribe(usuarios => {
+      if (usuarios) {
+        const usuario = usuarios.find(usuario => usuario.dni === this.dniPaciente && usuario.tipo === "Paciente");
+        if (usuario) {
+          this.pacienteEncontrado = usuario;
+        } else {
+          this.pacienteEncontrado = undefined;
+        }
+      } else {
+        this.pacienteEncontrado = undefined;
+      }
+    });
+  }
+
   cargarTurno() {
+
+    let usuario: Paciente;
+
+    if (this.pacienteEncontrado) {
+      usuario = this.pacienteEncontrado as Paciente;
+    }
+    else {
+      usuario = this.usuarioLogueado as Paciente;
+    }
 
     const turno: Turno =
     {
+
       id: "",
-      especialidad: '',
-      especialista: '',
-      paciente: '',
+      especialidad: this.especialidadSeleccionada,
+      especialista: this.especialistaSeleccionado,
+      paciente: usuario,
       estado: 'pendiente',
-      encuesta: 'string',
+      encuesta: {
+        facilidadTurno: '',
+        tiempoEspera: '',
+      },
       calificacion: {
         puntaje: 0,
         comentario: '',
         calificado: false
       },
       fechaTurno: this.fechaFinal,
-      resenia: '',
+      comentarioPaciente: '',
+      comentarioEspecialista: '',
       historial: {
         altura: 0,
         peso: 0,
@@ -209,9 +289,16 @@ export class SolicitarTurnoComponent {
       }
     }
     this.firestore.agregar(turno, 'turnos');
+
+    this.snackBar.open(`Turno registrado correctamente`, 'Close', {
+      duration: 2000
+    });
+
+    this.router.navigate(['/bienvenida']);
   }
 
   horarioFinal(hora: string) {
+    this.horaSeleccionada = hora;
     const [hour, minuto] = hora.split(':');
     this.fechaFinal.setHours(Number(hour), Number(minuto), 0, 0);
     this.subirTurno = true;

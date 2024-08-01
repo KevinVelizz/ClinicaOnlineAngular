@@ -1,7 +1,7 @@
 <header class="header bg-cyan-600">
   <nav class="flex gap-2 px-8 py-8">
     <button routerLink="/bienvenida"
-      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce">
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce">
       <span>
         BIENVENIDA
       </span>
@@ -13,9 +13,24 @@
     @if(usuarioClinica.tipo === "Administrador")
     {
     <button routerLink="/administrar"
-      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
-      <span>
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
+      <span class="uppercase">
         Administrar
+      </span>
+    </button>
+
+    <button routerLink="/misTurnos"
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
+      <span class="uppercase">
+        Turnos
+      </span>
+    </button>
+
+
+    <button routerLink="/estadisticas"
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
+      <span class="uppercase">
+        Estadisticas
       </span>
     </button>
     }
@@ -23,26 +38,38 @@
     @if(usuarioClinica.tipo === "Paciente")
     {
     <button routerLink="/misTurnos"
-      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
       <span class="uppercase">
         Mis Turnos
-      </span>
-    </button>
-
-    <button routerLink="/solicitarTurno"
-      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
-      <span class="uppercase">
-        Solicitar Turno
       </span>
     </button>
     }
 
+    <div>
+      @if(usuarioClinica.tipo === "Paciente" || usuarioClinica.tipo == "Administrador")
+      {
+      <button routerLink="/solicitarTurno"
+        class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
+        <span class="uppercase">
+          Solicitar Turno
+        </span>
+      </button>
+      }
+    </div>
+
     @if(usuarioClinica.tipo === "Especialista")
     {
     <button routerLink="/misTurnos"
-      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
       <span class="uppercase">
         Mis Turnos
+      </span>
+    </button>
+
+    <button routerLink="/seccionPacientes"
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
+      <span class="uppercase">
+        Seccion Pacientes
       </span>
     </button>
     }
@@ -50,20 +77,18 @@
 
     }@else {
     <button routerLink="/login"
-      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
       <span>
         LOGIN
       </span>
     </button>
 
     <button routerLink="/register"
-      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-1">
       <span>
         REGISTER
       </span>
     </button>
-
-
     }
   </nav>
   @if(logueado)
@@ -73,14 +98,14 @@
   <div class="salir">
     <h2 class="usuario">{{usuarioClinica.nombre}}</h2>
     <button (click)="LogOut()"
-      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-3">
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-3">
       <span class="uppercase">
         Salir
       </span>
     </button>
 
     <button routerLink="/miPerfil"
-      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-3 px-6 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-3">
+      class="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full shadow-lg shadow-neutral-950 hover:text-white transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mr-3">
       <span class="uppercase">
         Perfil
       </span>

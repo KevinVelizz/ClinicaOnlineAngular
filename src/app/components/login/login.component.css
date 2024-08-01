@@ -128,7 +128,7 @@
 
 .button-confirm-users
 {
-    margin: 20px 0 0 auto;
+    margin: 5px 0 0 auto;
     width: 120px;
     height: 45px;
     border-radius: 5px;
@@ -140,19 +140,11 @@
     cursor: pointer;
 }
 
-
-
 .contenedor-botones
 {
     display: flex;
     flex-direction: column;
 }
-
-.contenedor-botones button
-{
-    margin-top: 10px;
-}
-
 
 /* CAMBIAR REGISTER */
 .wrapper {

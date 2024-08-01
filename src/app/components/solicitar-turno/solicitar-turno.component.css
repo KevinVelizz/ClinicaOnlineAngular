@@ -59,3 +59,21 @@
     height: 120px;
 }
 
+
+.selected {
+    background-color: #4caf50; 
+    color: white;
+}
+
+.unselected {
+    background-color: #009688; 
+    color: white;
+}
+
+.selected:hover {
+    background-color: #388e3c; 
+}
+
+.unselected:hover {
+    background-color: #00796b; 
+}

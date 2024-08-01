@@ -1,33 +1,155 @@
 <div class="container">
-    <h2>Mis Turnos</h2>
-    
-    <input type="text" placeholder="Buscar por Especialidad - Especialista" [(ngModel)]="filtro" (input)="filtrarTurnos()">
-    
-    <div *ngIf="turnosFiltrados.length === 0">No se encontraron turnos.</div>
-    
-    <div *ngFor="let turno of turnosFiltrados" class="turno-card">
-        <p><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
-        <p><strong>Especialista:</strong> {{ turno.especialista }}</p>
-        <p><strong>Fecha:</strong> {{ turno.fechaTurno| date: 'short' }}</p>
+    <div [@scaleInVerBottom]>
+        @if(usuario?.tipo == "Paciente")
+        {
+        <div class="flex flex-col">
+            <h2 class="mb-3 text-center text-xl">Mis Turnos</h2>
 
-        <div *ngIf="mostrarComentario && (turno.resenia)">
-            <p><strong>Comentario:</strong> {{ turno.resenia }}</p>
+            <input class="mb-3 text-center" type="text" placeholder="Buscar" [(ngModel)]="filtro">
         </div>
 
-        <div *ngIf="turno.estado === 'pendiente'">
-            <button class="bg-red-600 mr-5 py-2 px-3 uppercase" (click)="cancelar(turno)">Cancelar Turno</button>
+        <div *ngIf="turnosFiltrados.length === 0">No se encontraron turnos.</div>
+
+        <div *ngFor="let turno of turnosFiltrados | filtrar: filtro : 'Paciente'" class="turno-card">
+            <p><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
+            <p><strong>Especialista:</strong> {{ turno.especialista.nombre }}</p>
+            <p><strong>Paciente:</strong> {{ turno.paciente.nombre }}</p>
+            <p appCambiarColor [estado]="turno.estado"><strong style="color: #632c3b;">Estado: </strong>{{ turno.estado
+                }}</p>
+            <p><strong>Fecha:</strong> {{ turno.fechaTurno | date: 'medium'}}</p>
+
+            @if(turno.historial?.altura != 0)
+            {
+            <p><strong>Altura:</strong> {{ turno.historial?.altura}}</p>
+            <p><strong>Presion:</strong> {{ turno.historial?.presion}}</p>
+            <p><strong>Temperatura:</strong> {{ turno.historial?.temperatura}}</p>
+            }
+
+            <div *ngIf="turno.estado === 'pendiente'">
+                <button (click)="cancelarTurno(turno, 'paciente')" class="bg-red-600 mr-5 py-2 px-3 uppercase">Cancelar
+                    Turno</button>
+            </div>
+
+            <div class="mb-2" *ngIf="turno.comentarioEspecialista">
+                <button (click)="mostrarComentario(turno)" class="bg-yellow-600 mr-5 py-2 px-3 uppercase">Ver
+                    reseña</button>
+            </div>
+
+            <div *ngIf="turno.estado == 'realizado' && turno.comentarioEspecialista && !turno.encuesta?.facilidadTurno">
+                <button (click)="realizarEncuesta(turno)" class="my-2 bg-green-600 py-2 px-3 uppercase">Realizar
+                    encuesta</button>
+            </div>
+
+            <div *ngIf="turno.estado === 'realizado' && !turno.calificacion?.calificado">
+                <button (click)="calificar(turno)" class="bg-blue-600 py-2 px-3 uppercase">Calificar
+                    Atención</button>
+            </div>
+        </div>
+        }
+        @if(usuario?.tipo == "Especialista")
+        {
+        <div class="flex flex-col">
+            <h2 class="mb-3 text-center text-xl">Mis Turnos</h2>
+
+            <input class="mb-3 text-center" type="text" placeholder="Buscar" [(ngModel)]="filtroEspecialista">
         </div>
 
-        <div *ngIf="turno.resenia">
-            <button (click)="mostrarComentario = true" class="bg-yellow-600 mr-5 py-2 px-3 uppercase">Ver reseña</button>
+        <div *ngIf="turnosFiltrados.length === 0">No se encontraron turnos.</div>
+
+        <div *ngFor="let turno of turnosFiltrados | filtrar: filtroEspecialista : 'Especialista'" class="turno-card">
+            <p><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
+            <p><strong>Especialista:</strong> {{ turno.especialista.nombre }}</p>
+            <p><strong>Paciente:</strong> {{ turno.paciente.nombre }}</p>
+            <p appCambiarColor [estado]="turno.estado"><strong style="color: #632c3b;">Estado: </strong>{{ turno.estado
+                }}</p>
+            <p><strong>Fecha:</strong> {{ turno.fechaTurno | date: 'medium'}}</p>
+            @if(turno.historial?.altura != 0)
+            {
+            <p><strong>Altura:</strong> {{ turno.historial?.altura}}</p>
+            <p><strong>Presion:</strong> {{ turno.historial?.presion}}</p>
+            <p><strong>Temperatura:</strong> {{ turno.historial?.temperatura}}</p>
+            }
+
+            <div class="flex">
+                <div
+                    *ngIf="turno.estado !== 'realizado' && turno.estado !== 'rechazado' && turno.estado != 'cancelado'">
+                    <button (click)="cancelarTurno(turno, 'especialista')"
+                        class="bg-red-600 mr-3 py-2 px-3 mb-2 uppercase">Cancelar</button>
+                </div>
+
+                <div class="mb-2" *ngIf="turno.comentarioPaciente">
+                    <button (click)="mostrarComentario(turno)" class="bg-yellow-600 mr-3 py-2 px-3 uppercase">Ver
+                        reseña</button>
+                </div>
+
+
+                <div class="mb-2"
+                    *ngIf="turno.estado !== 'aceptado' && turno.estado !== 'realizado' && turno.estado !== 'cancelado' && turno.estado !== 'rechazado'">
+                    <button (click)="rechazarTurno(turno)" class="bg-yellow-600 mr-3 py-2 px-3 uppercase">Rechazar
+                    </button>
+                </div>
+
+                <div class="mb-2"
+                    *ngIf="turno.estado !== 'realizado' && turno.estado !== 'cancelado' && turno.estado !== 'rechazado' && turno.estado !== 'aceptado'">
+                    <button (click)="interactuarTurno(turno,'aceptado')"
+                        class="bg-green-600 mr-3 py-2 px-3 uppercase">Aceptar
+                    </button>
+                </div>
+
+                <div class="mb-2" *ngIf="turno.estado == 'aceptado'">
+                    <button (click)="mostrarModalDeHistorial(turno)"
+                        class="bg-pink-600 mr-3 py-2 px-3 uppercase">Finalizar
+                    </button>
+                </div>
+            </div>
+        </div>
+        }
+        @if(usuario?.tipo === "Administrador")
+        {
+        <div class="flex flex-col">
+            <h2 class="mb-3 text-center text-xl">Mis Turnos</h2>
+
+            <input class="mb-3 text-center" type="text" placeholder="Buscar" [(ngModel)]="filtroAdmin">
         </div>
 
-        <div *ngIf="turno.estado === 'realizado' || turno.resenia">
-            <button (click)="mostrarComentario = true" class="bg-green-600 py-2 px-3 uppercase">Realizar encuesta</button>
-        </div>
+        <div *ngIf="turnosFiltrados.length === 0">No se encontraron turnos.</div>
 
-        <div *ngIf="turno.estado === 'realizado'">
-            <button (click)="mostrarComentario = true" class="bg-blue-600 mt-3 py-2 px-3 uppercase">Calificar Atención</button>
+        <div *ngFor="let turno of turnosFiltrados | filtrar: filtroAdmin : 'Administrador'" class="turno-card">
+            <p><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
+            <p><strong>Especialista:</strong> {{ turno.especialista.nombre }}</p>
+            <p><strong>Paciente:</strong> {{ turno.paciente.nombre }}</p>
+            <p appCambiarColor [estado]="turno.estado"><strong style="color: #632c3b;">Estado: </strong>{{ turno.estado
+                }}</p>
+            <p><strong>Fecha:</strong> {{ turno.fechaTurno | date: 'medium'}}</p>
+            @if(turno.historial?.altura != 0)
+            {
+            <p><strong>Altura:</strong> {{ turno.historial?.altura}}</p>
+            <p><strong>Presion:</strong> {{ turno.historial?.presion}}</p>
+            <p><strong>Temperatura:</strong> {{ turno.historial?.temperatura}}</p>
+            }
+
+            <div class="flex">
+                <div
+                    *ngIf="turno.estado !== 'realizado' && turno.estado !== 'rechazado' && turno.estado != 'cancelado'">
+                    <button (click)="cancelarTurno(turno, 'especialista')"
+                        class="bg-red-600 mr-3 py-2 px-3 mb-2 uppercase">Cancelar</button>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+<app-footer></app-footer>
+
+<div *ngIf="mostrarModalHistorial"
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg">
+        <div class="px-4 py-2 border-b border-gray-200">
+            <h5 class="text-xl font-semibold">Historial Clínico</h5>
+        </div>
+        <div class="p-4">
+            <app-modal-comentario [turno]="turnoSeleccionado"
+                (historialCompletado)="recibirHistorial($event)"></app-modal-comentario>
         </div>
     </div>
 </div>

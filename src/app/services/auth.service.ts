@@ -31,7 +31,6 @@ export class AuthService {
 
   async loginUserFireBase(email: string, pass: string) {
     await signInWithEmailAndPassword(this.authF, email, pass).then((usu) => {
-
       if (!usu.user?.emailVerified) {
         console.log("verifique el correo.");
         return;
@@ -39,7 +38,7 @@ export class AuthService {
       else {
         this.routerLogin.navigate(['/bienvenida']);
       }
-      this.fire.usuarios.subscribe((usuarios) => {
+      this.fire.usuarios.subscribe(async (usuarios) => {
         this.usuarioSesion = usuarios.filter(u => u.uid === usu.user?.uid)[0];
       })
     });

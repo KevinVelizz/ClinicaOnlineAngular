@@ -1,4 +1,4 @@
-<div class="container">
+<div [@bounceInLeft] class="container">
     <app-loader [isLoading]="isLoading"></app-loader>
     <label class="relative inline-flex items-center cursor-pointer">
         <input class="sr-only peer" value="" type="checkbox" (change)="onToggle($event)">
@@ -109,6 +109,13 @@
                     accept="image/png, image/jpeg" (change)="seleccionarFotoPerfilDos($event)">
             </div>
         </div>
+        <!-- <div class="text-center mb-4" [ngClass]="{'captcha-completed': captchaResuelto}">
+            <re-captcha (resolved)="resolved($event)" siteKey="6Le3tBgqAAAAAE6jlIg_dwNICPVBituyl0sSnzwW"></re-captcha>
+        </div> -->
+        <div>
+            <app-captcha-propio #captcha></app-captcha-propio>
+        </div>
+
         <button class="button-confirm" (click)="register()">Registrarse →</button>
     </form>
     }
@@ -207,7 +214,7 @@
             </div>
 
             <mat-chip-grid #chipGrid aria-label="Enter fruits">
-                @for (especialidad of especialidadesMostrar; track especialidad) {
+                @for (especialidad of especialidadesMostrar | ordenarEspecialidades; track especialidad ) {
                 <mat-chip-row (removed)="remove(especialidad)" [editable]="true"
                     [aria-description]="'press enter to edit ' + especialidad.nombre">
                     {{especialidad.nombre}}
@@ -221,6 +228,14 @@
                     (matChipInputTokenEnd)="add($event)" />
             </mat-chip-grid>
         </div>
+        <!-- <div class="text-center mb-4" [ngClass]="{'captcha-completed': captchaResuelto}">
+            <re-captcha (resolved)="resolved($event)" siteKey="6Le3tBgqAAAAAE6jlIg_dwNICPVBituyl0sSnzwW"></re-captcha>
+        </div> -->
+
+        <div>
+            <app-captcha-propio #captcha></app-captcha-propio>
+        </div>
+
         <button class="button-confirm" (click)="register()">Registrarse →</button>
     </form>
     }
