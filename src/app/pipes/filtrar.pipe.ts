@@ -18,6 +18,8 @@ export class FiltrarPipe implements PipeTransform {
         turno.especialidad?.toLowerCase().includes(busqueda) ||
         turno.especialista.nombre.toLowerCase().includes(busqueda) ||
         turno.paciente.nombre.toLowerCase().includes(busqueda) ||
+        turno.comentarioEspecialista!.toLowerCase().includes(busqueda) ||
+        turno.comentarioPaciente!.toLowerCase().includes(busqueda) ||
         formatDate(turno.fechaTurno).toLowerCase().includes(busqueda) ||
         turno.estado.includes(busqueda) ||
         (turno.historial?.datosDinamicos?.some(data =>

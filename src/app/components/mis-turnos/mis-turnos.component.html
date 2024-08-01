@@ -131,7 +131,7 @@
             <div class="flex">
                 <div
                     *ngIf="turno.estado !== 'realizado' && turno.estado !== 'rechazado' && turno.estado != 'cancelado'">
-                    <button (click)="cancelarTurno(turno, 'especialista')"
+                    <button (click)="cancelarTurno(turno, 'administrador')"
                         class="bg-red-600 mr-3 py-2 px-3 mb-2 uppercase">Cancelar</button>
                 </div>
             </div>
